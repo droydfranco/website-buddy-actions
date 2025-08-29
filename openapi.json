@@ -1,0 +1,231 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Website Buddy Actions",
+    "version": "1.2.0",
+    "description": "Endpoints to read/write GitHub and deploy files to InfinityFree via FTP."
+  },
+  "servers": [
+    {
+      "url": "https://YOUR-RENDER-URL.onrender.com"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "summary": "Health check",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/github/list-repos": {
+      "get": {
+        "operationId": "listRepos",
+        "summary": "List GitHub repositories",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Repo list"
+          }
+        }
+      }
+    },
+    "/github/get-file": {
+      "post": {
+        "operationId": "getFile",
+        "summary": "Get a file's raw content from GitHub",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "owner",
+                  "repo",
+                  "path"
+                ],
+                "properties": {
+                  "owner": {
+                    "type": "string"
+                  },
+                  "repo": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  },
+                  "ref": {
+                    "type": "string",
+                    "description": "Branch or commit SHA"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Raw file content"
+          }
+        }
+      }
+    },
+    "/github/put-file": {
+      "post": {
+        "operationId": "putFile",
+        "summary": "Create or update a file in GitHub",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "owner",
+                  "repo",
+                  "path",
+                  "content",
+                  "message"
+                ],
+                "properties": {
+                  "owner": {
+                    "type": "string"
+                  },
+                  "repo": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "Raw text content"
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "Commit message"
+                  },
+                  "branch": {
+                    "type": "string",
+                    "description": "Branch name (optional)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Commit result"
+          }
+        }
+      }
+    },
+    "/deploy/upload-ftp": {
+      "post": {
+        "operationId": "uploadSingleFile",
+        "summary": "Upload a single file to InfinityFree via FTP",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "remotePath": {
+                    "type": "string",
+                    "default": "/htdocs/index.html"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Upload result"
+          }
+        }
+      }
+    },
+    "/deploy/upload-zip": {
+      "post": {
+        "operationId": "uploadZip",
+        "summary": "Upload a ZIP (unpacked to target path) to InfinityFree via FTP",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "zip": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "basePath": {
+                    "type": "string",
+                    "default": "/htdocs"
+                  }
+                },
+                "required": [
+                  "zip"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Upload result"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-actions-key"
+      }
+    }
+  }
+}

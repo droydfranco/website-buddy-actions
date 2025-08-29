@@ -1,0 +1,17 @@
+{
+  "name": "website-buddy-actions",
+  "version": "1.2.0",
+  "description": "Actions server for Website Buddy (InfinityFree + GitHub + Render)",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@octokit/rest": "^21.0.0",
+    "adm-zip": "^0.5.10",
+    "basic-ftp": "^5.0.5",
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1"
+  }
+}
